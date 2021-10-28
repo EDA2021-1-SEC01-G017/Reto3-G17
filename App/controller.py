@@ -21,7 +21,8 @@
  """
 
 import config as cf
-import model
+from App import model
+import datetime
 import csv
 
 
@@ -30,9 +31,30 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # catalog es utilizado para interactuar con el modelo
+    archive = model.newArchive()
+    return archive
 # Funciones para la carga de datos
-
+def loadData(archive, ovnisfile):
+    """
+    Carga los datos de los archivos CSV en el modelo
+    """
+    ovnisfile = cf.data_dir + ovnisfile
+    input_file = csv.DictReader(open(ovnisfile, encoding="utf-8"),
+                                delimiter=",")
+    for ovni in input_file:
+        model.addOvni(archive, ovni)
+    return archive
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def getOvnisInCity(archive, City):
+    """
+    Retorna el total de avistamientos en una ciudad
+    """
+    Ciudad = (str(City)).lower
+    return model.getOvnisByRange(archive, Ciudad)
