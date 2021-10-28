@@ -55,7 +55,7 @@ def newArchive():
 
 # Funciones para agregar informacion al catalogo
 
-def addVideo(archive, video):
+def addOvni(archive, video):
 
     lt.addLast(archive["VideoList"], video)
 
