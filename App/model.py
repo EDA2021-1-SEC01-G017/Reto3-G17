@@ -73,7 +73,7 @@ def addOvni(archive, video):
         intList2 = me.getValue(path1)
         lt.addLast(intList2, video)
 
-
+    #Atajo por ciudad
     if mp.contains(archive["City"], video["city"]) == False:
         intList3 = lt.newList(datastructure = "SINGLE_LINKED")
         lt.addLast(intList3, video)
@@ -92,9 +92,9 @@ def getOvnisInCity(archive, wCiudad):
     data1 = {}
     data2 = []
     
-
     #Diccionario de las ciudades con sus respectivas cantidades de avistamientos
     numCities = mp.size(archive["City"])
+
     ciudades = mp.keySet(archive["City"])     
     for ciudad in lt.iterator(ciudades):
         path1 = mp.get(archive["City"], ciudad)
@@ -102,12 +102,11 @@ def getOvnisInCity(archive, wCiudad):
         data1[ciudad] = lt.size(sightList1)
 
     #Lista de todos los avistamientos de la ciudad seleccionada
-    path2 = mp.get(archive["City"]. wCiudad)
+    path2 = mp.get(archive["City"], wCiudad)
     sightList2 = me.getValue(path2)
     numSight = lt.size(sightList2)
-
+ 
     for sight in lt.iterator(sightList2):
-        indTimeInfo = datetime.datetime.strptime(sight["datetime"], '%Y-%m-%d %H:%M:%S')
         data2.append(sight)
 
     #Formatos de impresion

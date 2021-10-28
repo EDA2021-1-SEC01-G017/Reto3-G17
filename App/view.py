@@ -43,7 +43,7 @@ operación solicitada
 # ___________________________________________________
 
 
-archive = 'UFOS//UFOS-utf8-small.csv'
+route = 'UFOS//UFOS-utf8-small.csv'
 cont = None
 # ___________________________________________________
 #  Menu principal
@@ -77,11 +77,11 @@ while True:
     if int(inputs[0]) == 1:
         print("\nInicializando....")
         # cont es el controlador que se usará de acá en adelante
-        cont = controller.init()
+        archive = controller.init()
 
     elif int(inputs[0]) == 2:
         print("\nCargando información de avistamientos....")
-        controller.loadData(cont, archive)
+        controller.loadData(archive, route)
         
 
     elif int(inputs[0]) == 3:
