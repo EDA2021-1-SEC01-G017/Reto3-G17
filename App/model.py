@@ -66,7 +66,7 @@ def addOvni(archive, video):
     if om.contains(archive["DateIndex"], timeInfo) == False:
         initList1 = lt.newList(datastructure = "SINGLE_LINKED")
         lt.addLast(initList1, video)
-        mp.put(archive["DateIndex"], timeInfo, initList1)
+        om.put(archive["DateIndex"], timeInfo, initList1)
     
     else:
         path1 = om.get(archive["DateIndex"], timeInfo)
@@ -88,14 +88,14 @@ def addOvni(archive, video):
 
 # Funciones de consulta
 
-def OvnisInCity(archive, wCiudad):
+def getOvnisInCity(archive, wCiudad):
     data1 = {}
     data2 = []
     
 
     #Diccionario de las ciudades con sus respectivas cantidades de avistamientos
     numCities = mp.size(archive["City"])
-    ciudades = mp.keySet(archive["City"])  
+    ciudades = mp.keySet(archive["City"])     
     for ciudad in lt.iterator(ciudades):
         path1 = mp.get(archive["City"], ciudad)
         sightList1 = me.getValue(path1)
@@ -151,7 +151,11 @@ def OvnisInCity(archive, wCiudad):
     print("The first 3 and last 3 UFO sightinfgs in the city are: ")
     print(tabulate(finalDataList2, headers = headLiners2, tablefmt = "pretty") + "\n")
 
-
+    print('Avistamientos cargados: ' + str(lt.size(archive["VideoList"])))
+    print('Altura del arbol: ' + str(om.height(archive['DateIndex'])))
+    print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
+    print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
+    print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
 
         
 

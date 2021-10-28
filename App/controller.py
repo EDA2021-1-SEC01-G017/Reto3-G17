@@ -57,4 +57,4 @@ def getOvnisInCity(archive, City):
     Retorna el total de avistamientos en una ciudad
     """
     Ciudad = (str(City)).lower
-    return model.getOvnisByRange(archive, Ciudad)
+    return model.getOvnisInCity(archive, Ciudad)

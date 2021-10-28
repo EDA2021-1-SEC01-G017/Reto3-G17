@@ -82,20 +82,15 @@ while True:
     elif int(inputs[0]) == 2:
         print("\nCargando información de avistamientos....")
         controller.loadData(cont, archive)
-        print('Avistamientos cargados: ' + str(lt.size(archive["VideoList"])))
-        print('Altura del arbol: ' + str(om.height(archive['DateIndex'])))
-        print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
-        print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
-        print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
+        
 
     elif int(inputs[0]) == 3:
         print("\nREQ1-Buscando OVNIS en una ciudad: ")
         City = input("Ingrese la ciudad: ")
         total = controller.getOvnisInCity(archive, City)
-        print("Altura del arbol: " + str())
-        print("")
-
         print(total)
+        print("Altura del arbol: " + str(om.height(archive['DateIndex'])))
+        print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
 
     elif int(inputs[0]) == 4:
         print("\nREQ2-Buscando avistamientos por duración: ")
