@@ -41,7 +41,7 @@ Se define la estructura de un catálogo de videos. El catálogo tendrá dos list
 los mismos.
 """
 
-# Construccion de modelos
+# Construccion de modelos 
 
 def newArchive():
 
@@ -156,7 +156,8 @@ def getOvnisInCity(archive, wCiudad):
     print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
     print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
 
-        
+def a():        
+    pass
 
 
 
