@@ -49,8 +49,13 @@ def newArchive():
 
     archive["VideoList"] = lt.newList(datastructure = "SINGLED_LINKED")
     archive["DateIndex"] = om.newMap(omaptype = "BST", comparefunction = compareDates)
+    archive["Date"] = om.newMap(omaptype ="BST", comparefunction = compareDates)
     archive["City"] = mp.newMap(maptype = "PROBING", loadfactor = 0.5) 
     archive["DurSec"] = om.newMap(omaptype ="BST")
+    archive["GeoSector"] = mp.newMap(maptype = "PROBING", loadfactor = 0.5)
+    createGeoSect(archive)
+    archive["GeoList"] = om.newMap(omaptype = "BST")
+
 
     return archive
 
@@ -87,7 +92,7 @@ def addOvni(archive, video):
 
     #Atajo para duracion
 
-    if om.contains(archive["DurSec"], video["duration (seconds)"]) == False:
+    if om.contains(archive["DurSec"], float(video["duration (seconds)"])) == False:
         initList5 = lt.newList(datastructure = "SINGLE_LINKED")
         lt.addLast(initList5, video)
         om.put(archive["DurSec"], float(video["duration (seconds)"]), video)
@@ -96,6 +101,23 @@ def addOvni(archive, video):
         path3 = om.get(archive["DurSec"], float(video["duration (seconds)"]))
         initList6 = me.getValue(path3)
         lt.addLast(initList6, video)
+
+    #Atajo para fecha
+    indDate = video["date posted"][:10]
+    if om.contains(archive["Date"], indDate) == False:
+        initList7 = lt.newList(datastructure = "SINGLE_LINKED")
+        lt.addLast(initList7, video)
+        om.put(archive["Date"], indDate, initList7)
+
+    else:
+        path4 = om.get(archive["Date"], indDate)
+        initList8 = me.getValue(path4)
+        lt.addLast(initList8, video)
+    
+    #Atajo a GeoList
+
+
+    
 
 
 # Funciones para creacion de datos
@@ -170,7 +192,7 @@ def getOvnisInCity(archive, wCiudad):
     print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
     print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
 
-def durationCount(archive, wSecMin, wSecMax):   
+def durationRangeCount(archive, wSecMin, wSecMax):   
 
     wTimeMin = float(wSecMin + ".0")
     wTimeMax = float(wSecMax + ".0")
@@ -185,7 +207,7 @@ def durationCount(archive, wSecMin, wSecMax):
         
         if (duration >= wTimeMin) and (duration <= wTimeMax):
             count += 1
-            path1 = om.get(archive["DurSec"]. duration)
+            path1 = om.get(archive["DurSec"], duration)
             vidList = me.getValue(path1)
 
             for video in lt.iterator(vidList):
@@ -197,11 +219,99 @@ def durationCount(archive, wSecMin, wSecMax):
 
     #TODO Data lista, falta la tabla y los prints
             
+    print(data)
+
+def dateRangeSights(archive, minDate, maxDate):
+    oldDate = "9999-99-99"
+    count = 0
+    data = []
+
+
+    dates = om.keySet(archive["Date"])
+    for date in lt.iterator(dates):
+        if date < oldDate:
+            oldDate = date
+        
+        if (date >= minDate) and (date <= maxDate):
+            count += 1
+            path1 = om.get(archive["Date"], date)
+            vidList = me.getValue(path1)
+
+            for video in lt.iterator(vidList):
+                data.append(video)
+
+    #TODO Data lista, falta la tabla y los prints
+
+    print(data)
+
+def sightGeoCount(archive, minLon, maxLon, minLat, maxLat):
+
     pass
 
 
 
+
 # Funciones utilizadas para comparar elementos dentro de una list
+def createGeoSect (archive):
+    indexlist = ["11", "12", "13", "14", "15", "16", 
+                "21", "22", "23", "24", "25", "26",
+                "31", "32", "33", "34", "35", "36",
+                "41", "42", "43", "44", "45", "46",
+                "51", "52", "53", "54", "55", "56",
+                "61", "62", "63", "64", "65", "66"]
+
+    count = 1
+    for i in indexlist:
+        intList = lt.newList(datastructure="ARRAY_LIST")
+        lt.addLast(intList, "minLon")
+        lt.addLast(intList, "maxLon")
+        lt.addLast(intList, "minLat")
+        lt.addLast(intList, "maxLat")
+        
+        
+        if i[1] == "1":
+            lt.changeInfo(intList, 0, -180.0) 
+            lt.changeInfo(intList, 1, -150.0)
+        elif i[1] == "2":
+            lt.changeInfo(intList, 0, -150.0) 
+            lt.changeInfo(intList, 1, -120.0)       
+        elif i[1] == "3":
+            lt.changeInfo(intList, 0, -120.0) 
+            lt.changeInfo(intList, 1, -90.0)       
+        elif i[1] == "4":
+            lt.changeInfo(intList, 0, -90.0) 
+            lt.changeInfo(intList, 1, -60.0)       
+        elif i[1] == "5":
+            lt.changeInfo(intList, 0, -60.0) 
+            lt.changeInfo(intList, 1, -30.0)      
+        else:
+            lt.changeInfo(intList, 0, -30.0) 
+            lt.changeInfo(intList, 1, 0.0)
+
+        if i[0] == "1":
+            lt.changeInfo(intList, 2, 0.0) 
+            lt.changeInfo(intList, 3, 30.0)
+        elif i[0] == "2":
+            lt.changeInfo(intList, 2, 30.0) 
+            lt.changeInfo(intList, 3, 60.0)
+        elif i[0] == "3":
+            lt.changeInfo(intList, 2, 60.0) 
+            lt.changeInfo(intList, 3, 90.0)
+        elif i[0] == "4":
+            lt.changeInfo(intList, 2, 90.0) 
+            lt.changeInfo(intList, 3, 120.0)
+        elif i[0] == "5":
+            lt.changeInfo(intList, 2, 120.0) 
+            lt.changeInfo(intList, 3, 150.0)
+        else:
+            lt.changeInfo(intList, 2, 150.0) 
+            lt.changeInfo(intList, 3, 180.0)
+            
+        mp.put(archive["GeoSector"], count, intList)
+        count +=1
+        
+    
+            
 
 def compareDates(date1, date2):
     """

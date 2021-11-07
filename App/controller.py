@@ -59,3 +59,16 @@ def getOvnisInCity(archive, City):
     Ciudad = (str(City)).lower
     return model.getOvnisInCity(archive, Ciudad)
 
+def durationRangeCount(archive, wSecMin, wSecMax):
+    """
+    Retorna los avistamientos con una duración en segundos contenida en el rango
+    """
+    return model.durationRangeCount(archive, wSecMin, wSecMax)
+
+
+def dateRangeSights(archive, minDate, maxDate):
+    """
+    Retorna los avistamientos en un rango de fechas
+    """
+    return model.dateRangeSights(archive, minDate, maxDate)
+

@@ -94,10 +94,10 @@ while True:
 
     elif int(inputs[0]) == 4:
         print("\nREQ2-Buscando avistamientos por duración: ")
-        limiteinf = input("Ingresar límite inferior de tiempo(segundos): ")
-        limitesup = input("Ingresar límite superior de tiempo(segundos): ")
-        maxSight = controller.getMaxSightByRange(cont, limiteinf,
-                                                      limitesup)
+        wSecMin = input("Ingresar límite inferior de tiempo(segundos): ")
+        wSecMax = input("Ingresar límite superior de tiempo(segundos): ")
+        maxSight = controller.durationRangeCount(archive, wSecMin,
+                                                      wSecMax)
         print(maxSight)
     
     elif int(inputs[0]) == 5:
@@ -110,10 +110,10 @@ while True:
     
     elif int(inputs[0]) == 6:
         print("\nREQ4-Consultar avistamientos en rango de fechas: ")
-        limiteinf = input("Ingresar límite inferior de fechas(AAAA-MM-DD): ")
-        limitesup = input("Ingresar límite superior de fechas(AAAA-MM-DD): ")
-        SightDates = controller.getSightByRangeHM(cont, limiteinf,
-                                                      limitesup)
+        minDate = input("Ingresar límite inferior de fechas(AAAA-MM-DD): ")
+        maxDate = input("Ingresar límite superior de fechas(AAAA-MM-DD): ")
+        SightDates = controller.dateRangeSights(cont, minDate,
+                                                      maxDate)
         print(SightDates)
     
     elif int(inputs[0]) == 7:
