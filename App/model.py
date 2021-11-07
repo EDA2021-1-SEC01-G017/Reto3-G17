@@ -48,8 +48,9 @@ def newArchive():
     archive = {}
 
     archive["VideoList"] = lt.newList(datastructure = "SINGLED_LINKED")
-    archive["DateIndex"] = om.newMap(omaptype = "RBT", comparefunction = compareDates)
-    archive["City"] = mp.newMap(maptype= "PROBING", loadfactor = 0.5) 
+    archive["DateIndex"] = om.newMap(omaptype = "BST", comparefunction = compareDates)
+    archive["City"] = mp.newMap(maptype = "PROBING", loadfactor = 0.5) 
+    archive["DurSec"] = om.newMap(omaptype ="BST")
 
     return archive
 
@@ -60,7 +61,7 @@ def addOvni(archive, video):
     lt.addLast(archive["VideoList"], video)
 
 
-    #Atajo por datetime
+    #Atajo para datetime
     timeInfo = datetime.datetime.strptime(video["datetime"], '%Y-%m-%d %H:%M:%S')
 
     if om.contains(archive["DateIndex"], timeInfo) == False:
@@ -83,6 +84,19 @@ def addOvni(archive, video):
         path2 = mp.get(archive["City"], video["city"])
         intList4 = me.getValue(path2)
         lt.addLast(intList4, video)
+
+    #Atajo para duracion
+
+    if om.contains(archive["DurSec"], video["duration (seconds)"]) == False:
+        initList5 = lt.newList(datastructure = "SINGLE_LINKED")
+        lt.addLast(initList5, video)
+        om.put(archive["DurSec"], float(video["duration (seconds)"]), video)
+    
+    else:
+        path3 = om.get(archive["DurSec"], float(video["duration (seconds)"]))
+        initList6 = me.getValue(path3)
+        lt.addLast(initList6, video)
+
 
 # Funciones para creacion de datos
 
@@ -156,7 +170,33 @@ def getOvnisInCity(archive, wCiudad):
     print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
     print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
 
-def a():        
+def durationCount(archive, wSecMin, wSecMax):   
+
+    wTimeMin = float(wSecMin + ".0")
+    wTimeMax = float(wSecMax + ".0")
+    maxDur = 0
+    count = 0
+    data = []
+
+    durations = om.keySet(archive["DurSec"])    
+    for duration in lt.iterator(durations):
+        if duration > maxDur:
+            maxDur = duration
+        
+        if (duration >= wTimeMin) and (duration <= wTimeMax):
+            count += 1
+            path1 = om.get(archive["DurSec"]. duration)
+            vidList = me.getValue(path1)
+
+            for video in lt.iterator(vidList):
+                data.append(video)
+
+    path2 = om.get(archive["DurSec"], maxDur)
+    maxVidList = me.getValue(path2)
+    mDurSize = lt.size(maxVidList)
+
+    #TODO Data lista, falta la tabla y los prints
+            
     pass
 
 
