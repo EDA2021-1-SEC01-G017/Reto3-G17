@@ -95,7 +95,7 @@ def addOvni(archive, video):
     if om.contains(archive["DurSec"], float(video["duration (seconds)"])) == False:
         initList5 = lt.newList(datastructure = "SINGLE_LINKED")
         lt.addLast(initList5, video)
-        om.put(archive["DurSec"], float(video["duration (seconds)"]), video)
+        om.put(archive["DurSec"], float(video["duration (seconds)"]), initList5)
     
     else:
         path3 = om.get(archive["DurSec"], float(video["duration (seconds)"]))
@@ -113,7 +113,6 @@ def addOvni(archive, video):
         path4 = om.get(archive["Date"], indDate)
         initList8 = me.getValue(path4)
         lt.addLast(initList8, video)
-    
     #Atajo a GeoList
 
 

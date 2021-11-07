@@ -81,8 +81,7 @@ while True:
 
     elif int(inputs[0]) == 2:
         print("\nCargando información de avistamientos....")
-        controller.loadData(archive, route)
-        
+        controller.loadData(archive, route)    
 
     elif int(inputs[0]) == 3:
         print("\nREQ1-Buscando OVNIS en una ciudad: ")
