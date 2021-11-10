@@ -35,6 +35,7 @@ assert cf
 from tabulate import tabulate
 import datetime
 import operator
+import folium   
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -122,7 +123,7 @@ def addOvni(archive, video):
 # Funciones para creacion de datos
 
 # Funciones de consulta
-
+#---#1
 def getOvnisInCity(archive, wCiudad):
     data1 = {}
     data2 = []
@@ -190,7 +191,7 @@ def getOvnisInCity(archive, wCiudad):
     print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
     print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
     print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
-
+#---#2
 def durationRangeCount(archive, wSecMin, wSecMax):   
 
     wTimeMin = float(wSecMin + ".0")
@@ -220,6 +221,81 @@ def durationRangeCount(archive, wSecMin, wSecMax):
             
     print(data)
 
+#---#3
+def getSightByRangeHM(archive, limiteinf,limitesup):
+    if (len(limiteinf) == 4) and (len(limitesup)==4):
+        wTimeMax = int(limitesup)
+        wTimeMin = int(limiteinf)
+        maxDur = 0
+        count = 0
+        data = []
+        datetime = archive["datetime"]
+        time = datetime[11:]
+
+        durations = om.keyset(datetime)
+        for duration in lt.iterator(durations):
+            if duration > maxDur:
+                maxDur = duration
+
+            if (duration >= wTimeMin) and (duration <= wTimeMax):
+                count +=1
+                path1 = om.get(datetime, duration)
+                vidList = me.getValue(path1)
+
+                for video in lt.iterator(vidList):
+                    data.append(video)
+
+        path2 = om.get(datetime, maxDur)
+        maxVidList = me.getValue(path2)
+        mDurSize = lt.size(maxVidList)
+
+        #TODO revisar conversión de HH:MM, pero que mantenga orden también por fechas en dicc, #TODO tabla y prints
+
+    else:
+        print("Porfavor vuelva a ingresar los datos de fechas \n se han ingresado de la manera incorrecta, \n recuerde que el formato es HH:MM:SS")
+    return archive, limiteinf, limitesup
+
+#---#5
+def getHowSightInZone(archive, limiteinfLat, limitesupLat,
+                    limiteinfLon, limitesupLon):
+    return None
+
+#---#6BONO
+"""
+Copia del 5 pero con añadido de "folium"
+"""
+def getSightInZone(archive, limiteinfLat, limitesupLat,
+                    limiteinfLon, limitesupLon):
+    return None
+
+#---# Prueba libreria "folium" para BONO
+def example():
+    exampleList = [{"#":1, "location":[45.5244, -122.6699]},{"#":2, "location":[45.5244, -122.6699]},{"#":3, "location":[45.5244, -122.6699]}
+    ,{"#":4, "location":[45.5244, -122.6699]},{"#":5, "location":[45.5244, -122.6699]},{"#":16, "location":[45.5244, -122.6699]}
+    ,{"#":17, "location":[45.5244, -122.6699]},{"#":18, "location":[45.5244, -122.6699]},{"#":19, "location":[45.5244, -122.6699]},{"#":20, "location":[45.5244, -122.6699]}]
+   
+    lat = int(exampleList[0]["location"][0])
+    lon = int(exampleList[0]["location"][1])
+    print(lat, lon)
+    i = 0
+    size = int(lt.size(exampleList))
+    while i < size:
+        lat = int(exampleList[i]["location"][0])
+        lon = int(exampleList[i]["location"][1])
+        place = [lat, lon]
+        m = folium.Map(location=place, tiles="Stamen Toner", zoom_start=13)
+        folium.Circle(
+            radius=100,
+            location=place,
+            popup="The Sight",
+            color="#3186cc",
+            fill=True,
+            fill_color="#3186cc",
+        ).add_to(m)
+        print("Mapa número " + str(exampleList[i]["#"]) + "con ubicación " + str(place))
+        print(m)
+        i ++1
+#---#4
 def dateRangeSights(archive, minDate, maxDate):
     oldDate = "9999-99-99"
     count = 0

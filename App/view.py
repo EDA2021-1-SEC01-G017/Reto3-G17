@@ -19,8 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
+
 import sys
 import config
+from App import model #SE DEBE BORRAR, SOLO ES PARA EL EJEMPLO #TODO
 from App import controller
 assert config
 
@@ -62,6 +64,7 @@ def printMenu():
     print("6- REQ4-Consultar avistamientos en rango de fechas /--Limite inferior AAAA-MM-DD y Límite superior AAAA-MM-DD--/")
     print("7- REQ5-Consultar avistamientos en una zona geográfica /--Long(Limite máx y min) Lat(Límite máx y min)--/")
     print("8- REQ6BONO-Visualizar avistamientos en una zona geográfica /--Long(Limite máx y min) Lat(Límite máx y min)--/")
+    print("9- Example(folium)")
     print("0- Salir")
     print("*******************************************")
 
@@ -143,6 +146,10 @@ while True:
                                                       limiteinfLon, limitesupLon)
         print(WatchSightZone)
 
+    elif int(inputs[0]) == 9:
+        print("Prueba de ejemplo")
+        ex = controller.example()
+        print(ex)
     else:
         sys.exit(0)
 

@@ -71,4 +71,31 @@ def dateRangeSights(archive, minDate, maxDate):
     Retorna los avistamientos en un rango de fechas
     """
     return model.dateRangeSights(archive, minDate, maxDate)
+#---#3
+def getSightByRangeHM(archive, limiteinf,limitesup):
+    """
+    Retorna los avistamientos en un rango de tiempo en el día
+    """
+    return model.getSightByRangeHM(archive, limiteinf,limitesup)
+#---#5
+def getHowSightInZone(archive, limiteinfLat, limitesupLat,
+                    limiteinfLon, limitesupLon):
+    """
+    Retorna los avistamientos en un zona geográfica
+    """
+    return model.getHowSightInZone(archive, limiteinfLat, limitesupLat,
+                    limiteinfLon, limitesupLon)
+#---#6BONO
+def getSightInZone(archive, limiteinfLat, limitesupLat,
+                    limiteinfLon, limitesupLon):
+    """
+    Permite visualizar los avistamientos de una zona geográfica
+    """
+    return model.getSightInZone(archive, limiteinfLat, limitesupLat,
+                    limiteinfLon, limitesupLon)
 
+def example():
+    """
+    Ejemplo de libreria
+    """
+    return model.example()
