@@ -56,7 +56,9 @@ def newArchive():
     archive["GeoSector"] = mp.newMap(maptype = "PROBING", loadfactor = 0.5)
     createGeoSect(archive)
     archive["GeoList"] = om.newMap(omaptype = "BST")
-
+    for cuadrante in range (1,37):
+        intList = lt.newList()
+        om.put(archive["GeoList"], cuadrante, intList)
 
     return archive
 
@@ -114,11 +116,25 @@ def addOvni(archive, video):
         path4 = om.get(archive["Date"], indDate)
         initList8 = me.getValue(path4)
         lt.addLast(initList8, video)
+
     #Atajo a GeoList
 
+    for sector in range (1, 37):
+        path5 = mp.get(archive["GeoSector"], sector)
+        intlist9 = me.getValue(path5)
+        lonMin = lt.getElement(intlist9, 0)
+        lonMax = lt.getElement(intlist9, 1)
+        latMin = lt.getElement(intlist9, 2)
+        latMax = lt.getElement(intlist9, 3)
+        
+        lonAct = float(video["longitude"])
+        latAct = float(video["latitude"])
 
-    
-
+        if (lonAct >= lonMin) and (lonAct < lonMax):
+            if (latAct >= latMin) and (latAct < latMax):
+                path6 = om.get(archive["GeoList"], sector)
+                intlist10 = me.getValue(path6)
+                lt.addLast(intlist10, video)
 
 # Funciones para creacion de datos
 
@@ -145,65 +161,31 @@ def getOvnisInCity(archive, wCiudad):
     for sight in lt.iterator(sightList2):
         data2.append(sight)
 
-    #Formatos de impresion
-    orderedData1 = dict(sorted(data1.items(), key=operator.itemgetter(1), reverse=True))
-    dataKeys1 = list(orderedData1.keys())
-    dataValues1 = list(orderedData1.values())
-    finalDataList1 = [
-        [dataKeys1[0], dataValues1[0]], 
-        [dataKeys1[1], dataValues1[1]],
-        [dataKeys1[2], dataValues1[2]],
-        [dataKeys1[3], dataValues1[3]],
-        [dataKeys1[4], dataValues1[4]]]
-    
+    answer = (data1, data2, numCities, numSight, wCiudad)
 
-    orderedData2 = sorted(data2, key=lambda sight: sight["datetime"])
-    dataKeys2 = list(orderedData2.keys())
-    headLiners2 = [dataKeys2[0], dataKeys2[1]. dataKeys2[2], dataKeys2[3], dataKeys2[4], dataKeys2[5]]
+    return answer
 
-    sight1 = orderedData2[0].values()
-    sight2 = orderedData2[1].values()
-    sight3 = orderedData2[2].values()
-    sightL3 = orderedData2[-3].values()
-    sightL2 = orderedData2[-2].values()
-    sightL1 = orderedData2[-1].values()
-
-    finalDataList2 = [
-        [sight1[0], sight1[1], sight1[2], sight1[3], sight1[4], sight1[5]], 
-        [sight2[0], sight2[1], sight2[2], sight2[3], sight2[4], sight2[5]],
-        [sight3[0], sight3[1], sight3[2], sight3[3], sight3[4], sight3[5]],
-        [sightL3[0], sightL3[1], sightL3[2], sightL3[3], sightL3[4], sightL3[5]],
-        [sightL2[0], sightL2[1], sightL2[2], sightL2[3], sightL2[4], sightL2[5]],
-        [sightL1[0], sightL1[1], sightL1[2], sightL1[3], sightL1[4], sightL1[5]]]
-                 
-    
-
-    print("There are " + str(numCities) + " differenet cities with UFO sightings...")
-    print("The TOP 5 cities with most UFO sighting are: ")
-    print(tabulate(finalDataList1, headers = ["city", "count"], tablefmt = "pretty") + "\n")
-
-    print("There are " + str(numSight) + " sightings at the: " + wCiudad + " city.")
-    print("The first 3 and last 3 UFO sightinfgs in the city are: ")
-    print(tabulate(finalDataList2, headers = headLiners2, tablefmt = "pretty") + "\n")
-
-    print('Avistamientos cargados: ' + str(lt.size(archive["VideoList"])))
-    print('Altura del arbol: ' + str(om.height(archive['DateIndex'])))
-    print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
-    print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
-    print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
 #---#2
 def durationRangeCount(archive, wSecMin, wSecMax):   
 
-    wTimeMin = float(wSecMin + ".0")
-    wTimeMax = float(wSecMax + ".0")
-    maxDur = 0
+    wTimeMin = float(wSecMin)
+    wTimeMax = float(wSecMax)
     count = 0
-    data = []
+    
 
-    durations = om.keySet(archive["DurSec"])    
+    data1 = {}
+    data2 = []
+
+    durations = om.keySet(archive["DurSec"])   
+    numberSec = lt.size(durations)
+
     for duration in lt.iterator(durations):
-        if duration > maxDur:
-            maxDur = duration
+
+        path0 = om.get(archive["DurSec"], duration)
+        intList0 = me.getValue(path0)
+        listsize = lt.size(intList0)
+
+        data1["duration"] = listsize
         
         if (duration >= wTimeMin) and (duration <= wTimeMax):
             count += 1
@@ -211,15 +193,12 @@ def durationRangeCount(archive, wSecMin, wSecMax):
             vidList = me.getValue(path1)
 
             for video in lt.iterator(vidList):
-                data.append(video)
+                data2.append(video)
 
-    path2 = om.get(archive["DurSec"], maxDur)
-    maxVidList = me.getValue(path2)
-    mDurSize = lt.size(maxVidList)
+    answer = (data1, data2, count, numberSec)
 
-    #TODO Data lista, falta la tabla y los prints
+    return answer
             
-    print(data)
 
 #---#3
 def getSightByRangeHM(archive, limiteinf,limitesup):
@@ -297,15 +276,13 @@ def example():
         i ++1
 #---#4
 def dateRangeSights(archive, minDate, maxDate):
-    oldDate = "9999-99-99"
-    count = 0
-    data = []
 
+    count = 0
+    data1 = {}
+    data2 = []
 
     dates = om.keySet(archive["Date"])
     for date in lt.iterator(dates):
-        if date < oldDate:
-            oldDate = date
         
         if (date >= minDate) and (date <= maxDate):
             count += 1
@@ -313,17 +290,75 @@ def dateRangeSights(archive, minDate, maxDate):
             vidList = me.getValue(path1)
 
             for video in lt.iterator(vidList):
-                data.append(video)
+                data2.append(video)
+        pair = om.get(archive["Date"], date)
+        intList0 = me.getValue(pair)
+        numVid = lt.size(intList0)
 
-    #TODO Data lista, falta la tabla y los prints
+        data1[date] = numVid
 
-    print(data)
+    answer = (data1, data2, count)
 
-def sightGeoCount(archive, minLon, maxLon, minLat, maxLat):
+    return answer
 
-    pass
+def getSightInZone(archive, minLon, maxLon, minLat, maxLat):
+    
+    data = []
+    typelist = []
 
+    left = []
+    right = []
+    down = []
+    up = []
 
+    for sector1 in range (1, 37):
+        path1 = mp.get(archive["GeoSector"], sector1)
+        intlist1 = me.getValue(path1)
+        lonMin = lt.getElement(intlist1, 0)
+        
+        if minLon >= lonMin:
+            left.append(sector1)
+    
+    for sector2 in left:
+        path2 = mp.get(archive["GeoSector"], sector2)
+        intlist2 = me.getValue(path2)
+        lonMax = lt.getElement(intlist2, 1)
+        
+        if maxLon < lonMax:
+            right.append(sector2)
+    
+    for sector3 in right:
+        path3 = mp.get(archive["GeoSector"], sector3)
+        intlist3 = me.getValue(path3)
+        latMin = lt.getElement(intlist3, 2)
+
+        if minLat >= latMin:
+            down.append(sector3)
+    
+    for sector4 in down:
+        path4 = mp.get(archive["GeoSector"], sector4)
+        intlist4 = me.getValue(path4)
+        latMax = lt.getElement(intlist4, 3)
+
+        if maxLat < latMax:
+            up.append(sector4)
+    
+    for fsector in up:
+        fpath = om.get(archive["GeoList"], fsector)
+        fintList = me.getValue(fpath)
+        for video in lt.iterator(fintList):
+            if (video["longitude"] >= minLon) and (video["longitude"] <= maxLon):
+                if (video["latitude"] >= minLat) and (video["latitude"] <= maxLat):
+                    data.append(video)
+    
+    for vid in data:
+        if vid["shape"] not in typelist:
+            typelist.append(vid["shape"])
+    numCat = len(typelist)
+
+    answer = (data, numCat)
+
+    return answer
 
 
 # Funciones utilizadas para comparar elementos dentro de una list

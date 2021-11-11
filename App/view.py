@@ -22,6 +22,8 @@
 
 import sys
 import config
+import operator
+from tabulate import tabulate
 from App import model #SE DEBE BORRAR, SOLO ES PARA EL EJEMPLO #TODO
 from App import controller
 assert config
@@ -47,6 +49,81 @@ operación solicitada
 
 route = 'UFOS//UFOS-utf8-small.csv'
 cont = None
+
+
+def getOvnisInCity(archive, City):
+
+    answer = controller.getOvnisInCity(archive, City)
+
+    data1 = answer[0]
+    data2 = answer[1]
+    numCities = answer[2]
+    numSight = answer[3]
+    wCiudad = answer[4]
+
+    orderedData1 = dict(sorted(data1.items(), key=operator.itemgetter(1), reverse=True))
+    dataKeys1 = list(orderedData1.keys())
+    dataValues1 = list(orderedData1.values())
+    finalDataList1 = [
+        [dataKeys1[0], dataValues1[0]], 
+        [dataKeys1[1], dataValues1[1]],
+        [dataKeys1[2], dataValues1[2]],
+        [dataKeys1[3], dataValues1[3]],
+        [dataKeys1[4], dataValues1[4]]]
+
+    orderedData2 = sorted(data2, key=lambda sight: sight["datetime"])
+    dataKeys2 = list(orderedData2.keys())
+    headLiners2 = [dataKeys2[0], dataKeys2[1]. dataKeys2[2], dataKeys2[3], dataKeys2[4], dataKeys2[5]]
+
+    sight1 = orderedData2[0].values()
+    sight2 = orderedData2[1].values()
+    sight3 = orderedData2[2].values()
+    sightL3 = orderedData2[-3].values()
+    sightL2 = orderedData2[-2].values()
+    sightL1 = orderedData2[-1].values()
+
+    finalDataList2 = [
+        [sight1[0], sight1[1], sight1[2], sight1[3], sight1[4], sight1[5]], 
+        [sight2[0], sight2[1], sight2[2], sight2[3], sight2[4], sight2[5]],
+        [sight3[0], sight3[1], sight3[2], sight3[3], sight3[4], sight3[5]],
+        [sightL3[0], sightL3[1], sightL3[2], sightL3[3], sightL3[4], sightL3[5]],
+        [sightL2[0], sightL2[1], sightL2[2], sightL2[3], sightL2[4], sightL2[5]],
+        [sightL1[0], sightL1[1], sightL1[2], sightL1[3], sightL1[4], sightL1[5]]]
+
+    print("There are " + str(numCities) + " differenet cities with UFO sightings...")
+    print("The TOP 5 cities with most UFO sighting are: ")
+    print(tabulate(finalDataList1, headers = ["city", "count"], tablefmt = "pretty") + "\n")
+
+    print("There are " + str(numSight) + " sightings at the: " + wCiudad + " city.")
+    print("The first 3 and last 3 UFO sightinfgs in the city are: ")
+    print(tabulate(finalDataList2, headers = headLiners2, tablefmt = "pretty") + "\n")
+
+    print('Avistamientos cargados: ' + str(lt.size(archive["VideoList"])))
+    print('Altura del arbol: ' + str(om.height(archive['DateIndex'])))
+    print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
+    print('Menor Llave: ' + str(om.minKey(archive['DateIndex'])))
+    print('Mayor Llave: ' + str(om.maxKey(archive['DateIndex'])))
+
+def durationRangeCount(archive, wSecMin, wSecMax):
+    answer = controller.durationRangeCount(archive, wSecMin, wSecMax)
+    data1 = answer[0]
+    data2 = answer[1]
+    count = answer[2]
+
+#TODO falta la tuya.
+
+def dateRangeSights(cont, minDate,maxDate):
+    answer = controller.dateRangeSights(cont, minDate, maxDate)
+    data1 = answer[0]
+    data2 = answer[1]
+    count = answer[2]
+
+def getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon):
+    answer = controller.getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon)
+    data = answer[0]
+    numCat = answer[1]
+
+
 # ___________________________________________________
 #  Menu principal
 # ___________________________________________________
@@ -89,7 +166,7 @@ while True:
     elif int(inputs[0]) == 3:
         print("\nREQ1-Buscando OVNIS en una ciudad: ")
         City = input("Ingrese la ciudad: ")
-        total = controller.getOvnisInCity(archive, City)
+        total = getOvnisInCity(archive, City)
         print(total)
         print("Altura del arbol: " + str(om.height(archive['DateIndex'])))
         print('Elementos en el arbol: ' + str(om.size(archive['DateIndex'])))
@@ -98,8 +175,7 @@ while True:
         print("\nREQ2-Buscando avistamientos por duración: ")
         wSecMin = input("Ingresar límite inferior de tiempo(segundos): ")
         wSecMax = input("Ingresar límite superior de tiempo(segundos): ")
-        maxSight = controller.durationRangeCount(archive, wSecMin,
-                                                      wSecMax)
+        maxSight = durationRangeCount(archive, wSecMin, wSecMax)
         print(maxSight)
     
     elif int(inputs[0]) == 5:
@@ -114,8 +190,7 @@ while True:
         print("\nREQ4-Consultar avistamientos en rango de fechas: ")
         minDate = input("Ingresar límite inferior de fechas(AAAA-MM-DD): ")
         maxDate = input("Ingresar límite superior de fechas(AAAA-MM-DD): ")
-        SightDates = controller.dateRangeSights(cont, minDate,
-                                                      maxDate)
+        SightDates = dateRangeSights (cont, minDate, maxDate)
         print(SightDates)
     
     elif int(inputs[0]) == 7:
@@ -123,6 +198,7 @@ while True:
         print("\nIngresar rangos de latitud: ")
         limiteinfLat = round(int(input("Ingresar límite inferior de latitud: ")), 2)
         limitesupLat = round(int(input("Ingresar límite superior de latitud: ")), 2)
+
         
         print("\nIngresar rangos de longitud: ")
         limiteinfLon = round(int(input("Ingresar límite inferior de longitud: ")), 2)
@@ -142,8 +218,7 @@ while True:
         limiteinfLon = round(int(input("Ingresar límite inferior de longitud: ")), 2)
         limitesupLon = round(int(input("Ingresar límite superior de longitud: ")), 2)
 
-        WatchSightZone = controller.getSightInZone(cont, limiteinfLat, limitesupLat,
-                                                      limiteinfLon, limitesupLon)
+        WatchSightZone = getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon)
         print(WatchSightZone)
 
     elif int(inputs[0]) == 9:
