@@ -240,39 +240,8 @@ def getSightByRangeHM(archive, limiteinf, limitesup):
 
     answer = (data1, data2, count)
 
-    
     return answer
 
-"""
-Copia del 5 pero con añadido de "folium"
-"""
-
-def example():
-    exampleList = [{"#":1, "location":[45.5244, -122.6699]},{"#":2, "location":[45.5244, -122.6699]},{"#":3, "location":[45.5244, -122.6699]}
-    ,{"#":4, "location":[45.5244, -122.6699]},{"#":5, "location":[45.5244, -122.6699]},{"#":16, "location":[45.5244, -122.6699]}
-    ,{"#":17, "location":[45.5244, -122.6699]},{"#":18, "location":[45.5244, -122.6699]},{"#":19, "location":[45.5244, -122.6699]},{"#":20, "location":[45.5244, -122.6699]}]
-   
-    lat = int(exampleList[0]["location"][0])
-    lon = int(exampleList[0]["location"][1])
-    print(lat, lon)
-    i = 0
-    size = int(lt.size(exampleList))
-    while i < size:
-        lat = int(exampleList[i]["location"][0])
-        lon = int(exampleList[i]["location"][1])
-        place = [lat, lon]
-        m = folium.Map(location=place, tiles="Stamen Toner", zoom_start=13)
-        folium.Circle(
-            radius=100,
-            location=place,
-            popup="The Sight",
-            color="#3186cc",
-            fill=True,
-            fill_color="#3186cc",
-        ).add_to(m)
-        print("Mapa número " + str(exampleList[i]["#"]) + "con ubicación " + str(place))
-        print(m)
-        i ++1
 
 #---#4
 def dateRangeSights(archive, minDate, maxDate):
@@ -356,11 +325,27 @@ def getSightInZone(archive, minLon, maxLon, minLat, maxLat):
                 if (video["latitude"] >= minLat) and (video["latitude"] <= maxLat):
                     data.append(video)
 
+    ind = 0
+    while ind < len(data):
+        i = data[ind]
+        lat = int(round(float(i["latitude"]),0))
+        lon = int(round(float(i["longitude"]),0))
+        place = [lat, lon]
+        m = folium.Map(location=place, tiles="Stamen Toner", zoom_start=13)
+        folium.Circle(
+            radius=100,
+            location=place,
+            popup="The Sight",
+            color="#3186cc",
+            fill=True,
+            fill_color="#3186cc",
+        ).add_to(m)
+        ind +=1
+
     numSight = len(data)
-    answer = (data, numSight)
+    answer = (data, numSight, m)
 
     return answer
-
 
 # Funciones utilizadas para comparar elementos dentro de una list
 def createGeoSect (archive):
@@ -422,7 +407,6 @@ def createGeoSect (archive):
         count +=1
 
             
-
 def compareDates(date1, date2):
     """
     Compara dos fechas

@@ -238,6 +238,7 @@ def getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon)
     answer = controller.getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon)
     data = answer[0]
     numCat = answer[1]
+    m = answer[2]
 
     orderedData2 = sorted(data, key=lambda sight: sight["datetime"])
     dataKeys2 = list(orderedData2.keys())
@@ -269,6 +270,9 @@ def getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon)
     print("There are " + str(numCat) + " different UFO sightings in the current area")
     print("The first 5 and last 5 UFO sightings in this time are: ")
     print(tabulate(finalDataList2, headers = headLiners2, tablefmt = "pretty") + "\n")
+
+    print("El mapa de coordenadas es: ")
+    print(m + "\n")
 
 
 
