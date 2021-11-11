@@ -106,7 +106,7 @@ def addOvni(archive, video):
         lt.addLast(initList6, video)
 
     #Atajo para fecha
-    indDate = video["date posted"][:10]
+    indDate = video["datetime"][:10]
     if om.contains(archive["Date"], indDate) == False:
         initList7 = lt.newList(datastructure = "SINGLE_LINKED")
         lt.addLast(initList7, video)
@@ -234,20 +234,10 @@ def getSightByRangeHM(archive, limiteinf,limitesup):
         print("Porfavor vuelva a ingresar los datos de fechas \n se han ingresado de la manera incorrecta, \n recuerde que el formato es HH:MM:SS")
     return archive, limiteinf, limitesup
 
-#---#5
-def getHowSightInZone(archive, limiteinfLat, limitesupLat,
-                    limiteinfLon, limitesupLon):
-    return None
-
-#---#6BONO
 """
 Copia del 5 pero con añadido de "folium"
 """
-def getSightInZone(archive, limiteinfLat, limitesupLat,
-                    limiteinfLon, limitesupLon):
-    return None
 
-#---# Prueba libreria "folium" para BONO
 def example():
     exampleList = [{"#":1, "location":[45.5244, -122.6699]},{"#":2, "location":[45.5244, -122.6699]},{"#":3, "location":[45.5244, -122.6699]}
     ,{"#":4, "location":[45.5244, -122.6699]},{"#":5, "location":[45.5244, -122.6699]},{"#":16, "location":[45.5244, -122.6699]}
@@ -274,6 +264,7 @@ def example():
         print("Mapa número " + str(exampleList[i]["#"]) + "con ubicación " + str(place))
         print(m)
         i ++1
+
 #---#4
 def dateRangeSights(archive, minDate, maxDate):
 
@@ -285,12 +276,14 @@ def dateRangeSights(archive, minDate, maxDate):
     for date in lt.iterator(dates):
         
         if (date >= minDate) and (date <= maxDate):
-            count += 1
+            
             path1 = om.get(archive["Date"], date)
             vidList = me.getValue(path1)
 
             for video in lt.iterator(vidList):
                 data2.append(video)
+                count += 1
+
         pair = om.get(archive["Date"], date)
         intList0 = me.getValue(pair)
         numVid = lt.size(intList0)
@@ -350,13 +343,9 @@ def getSightInZone(archive, minLon, maxLon, minLat, maxLat):
             if (video["longitude"] >= minLon) and (video["longitude"] <= maxLon):
                 if (video["latitude"] >= minLat) and (video["latitude"] <= maxLat):
                     data.append(video)
-    
-    for vid in data:
-        if vid["shape"] not in typelist:
-            typelist.append(vid["shape"])
-    numCat = len(typelist)
-
-    answer = (data, numCat)
+                    
+    numSight = len(data)
+    answer = (data, numSight)
 
     return answer
 
@@ -419,8 +408,7 @@ def createGeoSect (archive):
             
         mp.put(archive["GeoSector"], count, intList)
         count +=1
-        
-    
+
             
 
 def compareDates(date1, date2):
