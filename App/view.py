@@ -117,6 +117,7 @@ def dateRangeSights(cont, minDate,maxDate):
     data1 = answer[0]
     data2 = answer[1]
     count = answer[2]
+    count2 = answer[3]
 
 def getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon):
     answer = controller.getSightInZone(cont, limiteinfLat, limitesupLat, limiteinfLon, limitesupLon)

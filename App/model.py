@@ -268,7 +268,7 @@ def example():
 #---#4
 def dateRangeSights(archive, minDate, maxDate):
 
-    count = 0
+    count2 = 0
     data1 = {}
     data2 = []
 
@@ -282,15 +282,17 @@ def dateRangeSights(archive, minDate, maxDate):
 
             for video in lt.iterator(vidList):
                 data2.append(video)
-                count += 1
+                count2 += 1
 
         pair = om.get(archive["Date"], date)
         intList0 = me.getValue(pair)
         numVid = lt.size(intList0)
 
         data1[date] = numVid
+    
+    count = len(data1)
 
-    answer = (data1, data2, count)
+    answer = (data1, data2, count, count2)
 
     return answer
 
@@ -343,7 +345,7 @@ def getSightInZone(archive, minLon, maxLon, minLat, maxLat):
             if (video["longitude"] >= minLon) and (video["longitude"] <= maxLon):
                 if (video["latitude"] >= minLat) and (video["latitude"] <= maxLat):
                     data.append(video)
-                    
+
     numSight = len(data)
     answer = (data, numSight)
 
