@@ -52,6 +52,7 @@ def newArchive():
     archive["DateIndex"] = om.newMap(omaptype = "BST", comparefunction = compareDates)
     archive["Date"] = om.newMap(omaptype ="BST", comparefunction = compareDates)
     archive["City"] = mp.newMap(maptype = "PROBING", loadfactor = 0.5) 
+    archive["h/m"] = om.newMap(omaptype ="BST")
     archive["DurSec"] = om.newMap(omaptype ="BST")
     archive["GeoSector"] = mp.newMap(maptype = "PROBING", loadfactor = 0.5)
     createGeoSect(archive)
@@ -69,7 +70,7 @@ def addOvni(archive, video):
     lt.addLast(archive["VideoList"], video)
 
 
-    #Atajo para datetime
+    #Atajo para datetimeIn
     timeInfo = datetime.datetime.strptime(video["datetime"], '%Y-%m-%d %H:%M:%S')
 
     if om.contains(archive["DateIndex"], timeInfo) == False:
@@ -93,8 +94,20 @@ def addOvni(archive, video):
         intList4 = me.getValue(path2)
         lt.addLast(intList4, video)
 
-    #Atajo para duracion
+    #Atajo para hora/min
+    x = video["datetime"]
+    hour = x[-8:]
+    if om.contains(archive["h/m"], hour) == False:
+        intlist11 = lt.newList(datastructure="SINGLE_LINKED")
+        lt.addLast(intlist11, video)
+        om.put(archive["h/m"], hour, intlist11)
+    
+    else:
+        path11 = om.get(archive["h/m"], hour)
+        intlist12 = me.getValue(path11)
+        lt.addLast(intlist12, video)
 
+    #Atajo para duracion
     if om.contains(archive["DurSec"], float(video["duration (seconds)"])) == False:
         initList5 = lt.newList(datastructure = "SINGLE_LINKED")
         lt.addLast(initList5, video)
@@ -201,38 +214,34 @@ def durationRangeCount(archive, wSecMin, wSecMax):
             
 
 #---#3
-def getSightByRangeHM(archive, limiteinf,limitesup):
-    if (len(limiteinf) == 4) and (len(limitesup)==4):
-        wTimeMax = int(limitesup)
-        wTimeMin = int(limiteinf)
-        maxDur = 0
-        count = 0
-        data = []
-        datetime = archive["datetime"]
-        time = datetime[11:]
+def getSightByRangeHM(archive, limiteinf, limitesup):
+    
+    wTimeMax = int(limitesup)
+    wTimeMin = int(limiteinf)
+    maxDur = 0
+    count = 0
+    data1 = {}
+    data2 = []
+    datetime = archive["h/m"]
+    durations = om.keyset(datetime)
+    for duration in lt.iterator(durations):
+        if (duration >= wTimeMin) and (duration <= wTimeMax):
+            path1 = om.get(datetime, duration)
+            vidList = me.getValue(path1)
+            for video in lt.iterator(vidList):
+                count += 1
+                data2.append(video)
+        
+        path0 = mp.get(datetime, duration)
+        intList0 = me.getValue(path0)
+        hourSize = lt.size(intList0)
+        data1[duration] = hourSize
+            
 
-        durations = om.keyset(datetime)
-        for duration in lt.iterator(durations):
-            if duration > maxDur:
-                maxDur = duration
+    answer = (data1, data2, count)
 
-            if (duration >= wTimeMin) and (duration <= wTimeMax):
-                count +=1
-                path1 = om.get(datetime, duration)
-                vidList = me.getValue(path1)
-
-                for video in lt.iterator(vidList):
-                    data.append(video)
-
-        path2 = om.get(datetime, maxDur)
-        maxVidList = me.getValue(path2)
-        mDurSize = lt.size(maxVidList)
-
-        #TODO revisar conversión de HH:MM, pero que mantenga orden también por fechas en dicc, #TODO tabla y prints
-
-    else:
-        print("Porfavor vuelva a ingresar los datos de fechas \n se han ingresado de la manera incorrecta, \n recuerde que el formato es HH:MM:SS")
-    return archive, limiteinf, limitesup
+    
+    return answer
 
 """
 Copia del 5 pero con añadido de "folium"
@@ -296,6 +305,7 @@ def dateRangeSights(archive, minDate, maxDate):
 
     return answer
 
+#---#5
 def getSightInZone(archive, minLon, maxLon, minLat, maxLat):
     
     data = []
